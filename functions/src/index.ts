@@ -20,6 +20,7 @@ export const helloWorld = functions.https.onRequest((request, response) => {
     });
 });
 
+
 export const getUsers = functions.https.onRequest((request, response) => {
     const nombre = 'Ruben';
      response.json({
