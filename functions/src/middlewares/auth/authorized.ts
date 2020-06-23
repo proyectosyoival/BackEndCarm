@@ -14,7 +14,7 @@ export function isAuthorized(opts: { hasRole: Array<'admin' | 'user'>, allowSame
        const { role, email, uid } = res.locals
        const { id } = req.params
 
-       if (email === 'alex.ruval@gmail.com' || email === 'retg1986@gmail.com' || email === 'iv.rdzh@gmail.com')
+       if (email === 'retg1996@gmail.com')
             return next();
 
        if (opts.allowSameUser && id && uid === id)
