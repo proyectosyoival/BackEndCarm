@@ -4,7 +4,10 @@ import * as express from 'express';
 import * as cors from 'cors';
 import * as bodyParser from 'body-parser';
 import { routesConfig } from './users/routes-config';
-
+import { offersRoutes } from './offers/offers-routes';
+import { categoriesRoutes } from './categories/categories-routes';
+import { paymentsRoutes } from './payments/payments-routes';
+ 
 // const serviceAccount = require('./serviceAccountKey.json');
 
 admin.initializeApp();
@@ -15,41 +18,20 @@ admin.initializeApp();
 // });
 
 //referencia a nuestra bdd 
-// const db = admin.firestore();
+ //const db = admin.firestore();
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
 
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//  response.json({
-//      mensaje: "Otra cosa!"
-//     });
-// });
-
-// export const getUsers = functions.https.onRequest((request, response) => {
-//     const nombre = 'Ruben';
-//      response.json({
-//          nombre
-//      })
-//    });
 
     const app = express();
     app.use(bodyParser.json());
     app.use(cors({ origin: true }));
     routesConfig(app);
+    offersRoutes(app);
+    categoriesRoutes(app);
+    paymentsRoutes(app);
 
-  //  //api getuser
-  //  app.get('/user', async(req,res)=>{
-  //    const userRef = db.collection('users');
-  //    const docsSnap = await userRef.get();
-
-  //    const usuarios : any [] = [];
-     
-  //    docsSnap.docs.map(doc=>usuarios.push(doc.data()));
-  //    res.json(usuarios);
-
-
-  //  });
 
   //  app.get('/products', async(req, res)=>{
 

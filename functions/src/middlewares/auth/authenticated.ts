@@ -12,7 +12,7 @@ export async function isAuthenticated(req: Request, res: Response, next: Functio
     const { authorization } = req.headers
  
     if (!authorization)
-        return res.status(401).send({ message: 'Acceso denegado, debes estar autenticado' });
+        return res.status(401).send({ message: 'Acceso denegado, Introduza el Token' });
  
     if (!authorization.startsWith('Bearer'))
         return res.status(401).send({ message: 'Acceso Denegado, debes de Agregar el Tipado Bearer' });
