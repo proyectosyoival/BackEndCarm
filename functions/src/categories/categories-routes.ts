@@ -31,7 +31,7 @@ export function categoriesRoutes(app: Application) {
         remove
     ]);
     
-    app.put('/categories/:catId', [
+    app.put('/categories/:id', [
         isAuthenticated,
         isAuthorized({ hasRole: ['admin']}),
         upd

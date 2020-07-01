@@ -32,7 +32,7 @@ app.delete('/offers/:offerId', [
     remove
 ]);
 
-app.put('/offers/:offerId', [
+app.put('/offers/:id', [
     isAuthenticated,
     isAuthorized({ hasRole: ['admin']}),
     upd

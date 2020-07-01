@@ -8,15 +8,16 @@ Fecha: 25/06/2020
 Desc: Creacion de los controladores de las apis de categories*/
 /*********************************************************************************/
 
-// const todayDate = new Date();
-// const dateToday =(todayDate.getDate() + '-' + ((todayDate.getMonth() + 1)) +  '-' +todayDate.getFullYear()+ ' ' +todayDate.getHours() + ':' + todayDate.getMinutes()+ ':' + todayDate.getSeconds());
-
-
 interface Cat {
     karat: String,
     title: String,
-    catId: String
+    desc: String,
+    created?: String,
+    updated?: String,
+    deleted?: String,
 }
+
+
 
 export async function all(req: Request, res:Response){
     try {
@@ -47,34 +48,50 @@ export async function create(req: Request, res: Response){
        const categoria: Cat = {
            title: req.body['title'],
            karat: req.body['karat'],
-           catId: req.body['catId']
-       }
+           desc: req.body['desc'],
+           created: new Date().toISOString()
+       };
 
-    //    const dateTime = await admin.firestore.FieldValue.serverTimestamp();
        const newCategory = await admin.firestore().collection('category').add(categoria);
 
        return res.status(200).send(`La Categoria se creó con Exito: ${newCategory.id}`); 
         
     } catch (error) {
-       return res.status(400).send(`La Categoria deberia contener titulo, quilate!!!`);
+       return res.status(400).send(`La Categoria deberia contener titulo, quilataje y descripción!!!`);
    }
 }
 
 export async function remove(req: Request, res: Response){
     try {
+       
+        const cat1 = new Date().toISOString();
+        // const { id } = req.params;
+
+        // await admin.firestore().collection('category').doc(id).delete();
         await admin.firestore().collection('category').doc(req.params.catId).delete();
-        return res.status(200).send("Categoria Eliminada Correctamente!");
+        return res.status(200).send(`La categoría fue eliminada correctamente el: ${cat1}`);
     } catch (error) {
         return res.status(500).send(error);
     }
 
 }
 
-export async function upd(req: Request, res: Response){
 
+export async function upd(req: Request, res: Response){
     try {
-        await admin.firestore().collection('category').doc(req.params.catId).set(req.body, {merge:true});
-        return res.json({catId:req.params.catId});
+         const { id } = req.params;
+         const categoria: Cat = {
+            title: req.body['title'],
+            karat: req.body['karat'],
+            desc: req.body['desc'],
+            updated: new Date().toISOString()
+        };
+
+        // const { title, karat, desc, updated } = req.body
+
+        await admin.firestore().collection('category').doc(id).set(categoria, {merge:true});
+        // await admin.firestore().collection('category').doc(id).set(req.body, {merge:true});
+        return res.json(`La categoria con el id: ${id} , fue actualizada correctamente`);
     } catch (error) {
         return res.status(500).send(error);
 

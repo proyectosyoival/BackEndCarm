@@ -11,6 +11,9 @@ Desc: Creacion de los controladores de las apis de payments*/
 interface Payment {
     namePayment: String,
     status: number,
+    created?: String,
+    updated?: String,
+    deleted?: String,
 }
 
 
@@ -41,11 +44,12 @@ interface Payment {
 
         const pago: Payment = {
             namePayment: req.body['namePayment'],
-            status: req.body['status']
+            status: req.body['status'],
+            created: new Date().toISOString()
         }
 
         const newPayment = await admin.firestore().collection('payment').add(pago);
-        return res.status(200).send(`El Método de Pago se registró con éxito: ${newPayment.id}`); 
+        return res.status(200).send(`El Método de Pago con el id: ${newPayment.id} ,se registró con éxito`); 
          
      } catch (error) {
         return res.status(400).send(`El metodo de pago debe contener namePayment y status!!!`)
@@ -54,19 +58,25 @@ interface Payment {
 
 export async function remove(req: Request, res: Response){
     try {
+        const pay1 = new Date().toISOString();
         await admin.firestore().collection('payment').doc(req.params.id).delete();
-        return res.status(200).send("Método de Pago ha sido Eliminado Correctamente!");
+        return res.status(200).send(`La método de pago fue eliminada correctamente el: ${pay1}`);
     } catch (error) {
         return res.status(500).send(error);
     }
-
 }
 
 export async function upd(req: Request, res: Response){
 
     try {
-        await admin.firestore().collection('payment').doc(req.params.id).set(req.body, {merge:true});
-        return res.json({id:req.params.id});
+        const { id } = req.params;
+        const pago: Payment = {
+            namePayment: req.body['namePayment'],
+            status: req.body['status'],
+            updated: new Date().toISOString()
+        }
+        await admin.firestore().collection('payment').doc(id).set(pago, {merge:true});
+        return res.json(`El método de pago con el id: ${id} , fue actualizado correctamente`);
     } catch (error) {
         return res.status(500).send(error);
 

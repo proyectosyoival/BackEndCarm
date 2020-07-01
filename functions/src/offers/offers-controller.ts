@@ -11,9 +11,11 @@ Desc: Creacion de los controladores de las apis de offers*/
 
 interface Offer {
     description: String,
-    offerId: String,
     status: number,
-    title:String
+    title:String,
+    created?: String,
+    updated?: String,
+    deleted?: String,
 }
 
 
@@ -44,9 +46,9 @@ interface Offer {
 
         const oferta: Offer = {
             description: req.body['description'],
-            offerId: req.body['offerId'],
             status: req.body['status'],
-            title:req.body['title']
+            title:req.body['title'],
+            created: new Date().toISOString()
         }
 
         const newOffer = await admin.firestore().collection('offer').add(oferta);
@@ -59,8 +61,9 @@ interface Offer {
 
 export async function remove(req: Request, res: Response){
     try {
+        const off1 = new Date().toISOString();
         await admin.firestore().collection('offer').doc(req.params.offerId).delete();
-        return res.status(200).send("Oferta Eliminada Correctamente!");
+        return res.status(200).send(`La promoción fue eliminada correctamente el: ${off1}`);
     } catch (error) {
         return res.status(500).send(error);
     }
@@ -70,8 +73,16 @@ export async function remove(req: Request, res: Response){
 export async function upd(req: Request, res: Response){
 
     try {
-        await admin.firestore().collection('offer').doc(req.params.offerId).set(req.body, {merge:true});
-        return res.json({offerId:req.params.offerId});
+        const { id } = req.params;
+        const oferta: Offer = {
+            description: req.body['description'],
+            status: req.body['status'],
+            title:req.body['title'],
+            updated: new Date().toISOString()
+        }
+
+        await admin.firestore().collection('offer').doc(id).set(oferta, {merge:true});
+        return res.json(`La oferta con el id: ${id} , fue actualizada correctamente`);
     } catch (error) {
         return res.status(500).send(error);
 
