@@ -12,7 +12,15 @@ Desc: Aquí, configuramos las rutas de las apis de categories*/
 /*********************************************************************************/
 
 export function categoriesRoutes(app: Application) {
-
+ /**
+ * @swagger
+ * /api/categories:
+ * get:
+ *     description: Get demo hello world!
+ *     responses:
+ *         '200':
+ *          description: A successful response
+ */
     app.get('/categories', [
         isAuthenticated,
         isAuthorized({ hasRole: ['admin', 'user']}),

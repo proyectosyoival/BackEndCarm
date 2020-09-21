@@ -31,6 +31,33 @@ admin.initializeApp();
     offersRoutes(app);
     categoriesRoutes(app);
     paymentsRoutes(app);
+    
+    const swaggerJsDoc = require('swagger-jsdoc');
+    const swaggerUi = require('swagger-ui-express');
+
+    const swaggerOption ={
+      swaggerDefinition:{
+        info:{
+          title: "Pv Carmesi",
+          description: "This is a sample server for a pet store.",
+          termsOfService: "http://example.com/terms/",
+          contact: {
+            name: "API Support",
+            url: "http://www.example.com/support",
+            email: "support@example.com"
+          },
+          license: {
+            name: "Apache 2.0",
+            url: "https://www.apache.org/licenses/LICENSE-2.0.html"
+          },
+          servers : ["http://localhost:5000/pvcarmezi/us-central1/api"]
+        }
+      },
+      apis :["categories-routes.js"] 
+    };
+
+const swaggerDocs = swaggerJsDoc(swaggerOption);
+app.use("/api-docs",swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 
   //  app.get('/products', async(req, res)=>{

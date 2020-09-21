@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import * as admin from 'firebase-admin';
+import responseCodes from "../response/response-code";
 
 /**********************************************************************************/
 /*Functions: all, create, remove, upd, get
@@ -32,7 +33,7 @@ interface Payment {
         
         });
         // return res.status(200).send({ offers });
-        return res.status(200).json(payments);
+        return res.status(responseCodes.SUCCESS).json(payments);
      } catch (err) {
 
         return handleError(res, err);
@@ -49,10 +50,10 @@ interface Payment {
         }
 
         const newPayment = await admin.firestore().collection('payment').add(pago);
-        return res.status(200).send(`El Método de Pago con el id: ${newPayment.id} ,se registró con éxito`); 
+        return res.status(responseCodes.CREATE).send(`El Método de Pago con el id: ${newPayment.id} ,se registró con éxito`); 
          
      } catch (error) {
-        return res.status(400).send(`El metodo de pago debe contener namePayment y status!!!`)
+        return res.status(responseCodes.BAD_REQUEST).send(`El metodo de pago debe contener namePayment y status!!!`)
     }
 }
 
@@ -60,9 +61,9 @@ export async function remove(req: Request, res: Response){
     try {
         const pay1 = new Date().toISOString();
         await admin.firestore().collection('payment').doc(req.params.id).delete();
-        return res.status(200).send(`La método de pago fue eliminada correctamente el: ${pay1}`);
+        return res.status(responseCodes.SUCCESS).send(`La método de pago fue eliminada correctamente el: ${pay1}`);
     } catch (error) {
-        return res.status(500).send(error);
+        return res.status(responseCodes.INTERNAL_SERVER_ERROR).send(error);
     }
 }
 
@@ -78,7 +79,7 @@ export async function upd(req: Request, res: Response){
         await admin.firestore().collection('payment').doc(id).set(pago, {merge:true});
         return res.json(`El método de pago con el id: ${id} , fue actualizado correctamente`);
     } catch (error) {
-        return res.status(500).send(error);
+        return res.status(responseCodes.BAD_REQUEST).send(error);
 
     }
 }
@@ -88,12 +89,12 @@ export async function get(req: Request, res: Response){
         await admin.firestore().collection('payment').doc(pagoId).get()
         .then(pay =>{
             if(!pay.exists) throw new Error('Método de pago no encontrado');
-            res.status(200).json({id:pay.id, data:pay.data()})})
-        .catch(error => res.status(500).send(error));
+            res.status(responseCodes.SUCCESS).json({id:pay.id, data:pay.data()})})
+        .catch(error => res.status(responseCodes.INTERNAL_SERVER_ERROR).send(error));
         
 }
     
 
   function handleError(res: Response, err: any) {
-    return res.status(500).send({ message: `${err.code} - ${err.message}` });
+    return res.status(responseCodes.INTERNAL_SERVER_ERROR).send({ message: `${err.code} - ${err.message}` });
  }

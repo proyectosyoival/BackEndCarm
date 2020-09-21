@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import * as admin from 'firebase-admin';
+import responseCodes from "../response/response-code";
 
 /**********************************************************************************/
 /*Functions: all, create, remove, upd, get
@@ -17,8 +18,6 @@ interface Cat {
     deleted?: String,
 }
 
-
-
 export async function all(req: Request, res:Response){
     try {
 
@@ -34,7 +33,7 @@ export async function all(req: Request, res:Response){
        
        });
        // return res.status(200).send({ offers });
-       return res.status(200).json(categories);
+       return res.status(responseCodes.SUCCESS).json(categories);
     } catch (err) {
 
        return handleError(res, err);
@@ -54,10 +53,10 @@ export async function create(req: Request, res: Response){
 
        const newCategory = await admin.firestore().collection('category').add(categoria);
 
-       return res.status(200).send(`La Categoria se creó con Exito: ${newCategory.id}`); 
+       return res.status(responseCodes.CREATE).send(`La Categoria se creó con Exito: ${newCategory.id}`); 
         
     } catch (error) {
-       return res.status(400).send(`La Categoria deberia contener titulo, quilataje y descripción!!!`);
+       return res.status(responseCodes.BAD_REQUEST).send(`La Categoria deberia contener titulo, quilataje y descripción!!!`);
    }
 }
 
@@ -69,9 +68,9 @@ export async function remove(req: Request, res: Response){
 
         // await admin.firestore().collection('category').doc(id).delete();
         await admin.firestore().collection('category').doc(req.params.catId).delete();
-        return res.status(200).send(`La categoría fue eliminada correctamente el: ${cat1}`);
+        return res.status(responseCodes.SUCCESS).send(`La categoría fue eliminada correctamente el: ${cat1}`);
     } catch (error) {
-        return res.status(500).send(error);
+        return res.status(responseCodes.INTERNAL_SERVER_ERROR).send(error);
     }
 
 }
@@ -93,7 +92,7 @@ export async function upd(req: Request, res: Response){
         // await admin.firestore().collection('category').doc(id).set(req.body, {merge:true});
         return res.json(`La categoria con el id: ${id} , fue actualizada correctamente`);
     } catch (error) {
-        return res.status(500).send(error);
+        return res.status(responseCodes.BAD_REQUEST).send(error);
 
     }
 }
@@ -103,12 +102,12 @@ export async function get(req: Request, res: Response){
     await admin.firestore().collection('category').doc(categoriaId).get()
     .then(cate =>{
         if(!cate.exists) throw new Error('Categoria no encontrada');
-        res.status(200).json({catId:cate.id, data:cate.data()})})
-    .catch(error => res.status(500).send(error));
+        res.status(responseCodes.SUCCESS).json({catId:cate.id, data:cate.data()})})
+    .catch(error => res.status(responseCodes.INTERNAL_SERVER_ERROR).send(error));
     
 }
 
 
 function handleError(res: Response, err: any) {
-    return res.status(500).send({ message: `${err.code} - ${err.message}` });
+    return res.status(responseCodes.INTERNAL_SERVER_ERROR).send({ message: `${err.code} - ${err.message}` });
  }

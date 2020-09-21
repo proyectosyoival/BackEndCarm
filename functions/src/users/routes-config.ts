@@ -11,6 +11,8 @@ Desc: Aquí, configuramos las rutas de nuestras apis*/
 /*********************************************************************************/
  
 export function routesConfig(app: Application) {
+
+  
     app.post('/users',
         isAuthenticated,
         isAuthorized({ hasRole: ['admin']}),
@@ -18,6 +20,15 @@ export function routesConfig(app: Application) {
     );
 
 // lists all users
+  /**
+     * @swagger
+     * /users:
+     * get:
+     * description: hola
+     * response:
+     *          '200':
+     *           description:njddj
+     */
 app.get('/users', [
     isAuthenticated,
     isAuthorized({ hasRole: ['admin']}),
